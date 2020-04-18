@@ -48,3 +48,59 @@
 (a-plus-abs-b 11 4)
 
 ;; Exercise 1.5
+;;
+;; An applicative order evaluator would never terminate. The value of `p' is
+;; expanded prior to the logic of `test' being applied.
+;; Conversely, a normal-order evaluator would return 0, it never had the chance to
+;; expand `p'
+
+;; Exercise 1.6
+(define (new-if predicate
+                then-clause
+                else-clause)
+  (cond (predicate then-clause)
+        (else else-clause)))
+
+(new-if (= 2 3) 0 5)
+
+(new-if (= 1 1) 0 5)
+
+
+;; The new-if function is a 'de-specialised' form of if, meaning
+;; that it is now subject to applicative order, where all of the arguments
+;; provided to the function will be evaluated. As a result, sqrt-iter will be
+;; evaulated indefinitely, overflowing the call stack.
+;;
+;; (define (sqrt-iter guess x)
+;;   (new-if (good-enough? guess x)
+;;           guess
+;;           (sqrt-iter (improve guess x) x)))
+
+;; Exercise 1.7
+
+(define (average x y)
+  (/ (+ x y) 2))
+
+(define (improve guess x)
+  (average guess (/ x guess)))
+
+;; Original test function
+;; (define (good-enough? guess x)
+;;   (< (abs (- (square guess) x)) 0.001))
+
+;; Improved test function that checks if any further improvement can be done
+;; to the guess.
+(define (good-enough? guess x)
+  (= (improve guess x) guess))
+
+(define (sqrt-iter guess x)
+  (if (good-enough? guess x)
+      guess
+      (sqrt-iter (improve guess x) x)))
+
+(define (sqrt x)
+  (sqrt-iter 1.0 x))
+
+(sqrt 9)
+
+(sqrt 0.0001)
