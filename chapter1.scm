@@ -104,3 +104,5 @@
 (sqrt 9)
 
 (sqrt 0.0001)
+
+;; Go to 1.2.1 Linear Recursion and Iteration to continue
